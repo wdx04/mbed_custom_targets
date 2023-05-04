@@ -1,0 +1,272 @@
+{
+    "STM32G030C8": {
+        "inherits": ["MCU_STM32G030x8"],
+        "device_name": "STM32G030C8Tx",
+        "config": {
+            "hse_value": {
+                "value": "8000000",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL"
+        }
+    },
+    "MCU_STM32F401xC": {
+        "inherits": [
+            "MCU_STM32F4"
+        ],
+        "public": false,
+        "extra_labels_add": [
+            "STM32F401xC"
+        ],
+        "macros_add": [
+            "STM32F401xC"
+        ]
+    },
+    "STM32F401CC": {
+        "inherits": ["MCU_STM32F401xC"],
+        "device_name": "STM32F401CCUx",
+        "config": {
+            "hse_value": {
+                "value": "25000000",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "device_has_add": [
+            "USBDEVICE"
+        ]
+    },
+    "NUCLEO_F334R8": {
+        "inherits": ["MCU_STM32F334x8"],
+        "device_name": "STM32F334R8Tx",
+        "mbed_ram_size": "0x3000"
+    },
+    "STM32L071RZ": {
+        "inherits": ["MCU_STM32L071xZ"],
+        "device_name": "STM32L071RZTx",
+        "config": {
+            "hse_value": {
+                "value": "16000000",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL"
+        }
+    },
+    "STM32L431RC": {
+        "inherits": ["MCU_STM32L4"],
+        "device_name": "STM32L431RCTx",
+        "macros_add": [
+            "STM32L431xx",
+            "ST7789_HEIGHT=135"
+        ],
+        "components_add": [
+            "SPIF"
+        ],
+        "config": {
+            "hse_value": {
+                "value": "8000000",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL"
+        }
+    },
+    "DEVKIT_STM32L496VG": {
+        "inherits": [
+            "MCU_STM32L496xG"
+        ],
+        "device_has_add": [
+            "USBDEVICE"
+        ],
+        "macros_add": [
+            "HAS_DMA2D=1"
+        ],
+        "detect_code": [
+            "0313"
+        ],
+        "device_name": "STM32L496VGTx"
+    },
+    "STM32F103RB": {
+        "inherits": [
+            "MCU_STM32F103xB"
+        ],
+        "device_name": "STM32F103RB",
+        "config": {
+            "hse_value": {
+                "value": "8000000",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL"
+        }
+    },
+    "STM32F103ZE": {
+        "inherits": ["MCU_STM32F103xE"],
+        "device_name": "STM32F103ZE",
+        "config": {
+            "hse_value": {
+                "value": "8000000",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL"
+        }
+    },
+    "STM32F103CB": {
+        "inherits": ["MCU_STM32F103xB"],
+        "device_name": "STM32F103CB",
+        "config": {
+            "hse_value": {
+                "value": "8000000",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL"
+        }
+    },
+    "STM32F407VE": {
+        "inherits": ["MCU_STM32F407xE"],
+        "device_name": "STM32F407VETx",
+        "device_has_add": [
+            "CAN"
+        ],
+        "config": {
+            "hse_value": {
+                "value": "8000000",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL",
+            "console-uart": false
+        }
+    },
+    "STM32F407VE25M": {
+        "inherits": ["MCU_STM32F407xE"],
+        "device_name": "STM32F407VETx",
+        "device_has_add": [
+			"EMAC",
+            "ETHERNET",
+            "USBDEVICE"
+        ],
+        "device_has_remove": [
+            "CAN"
+        ],
+        "features": [
+            "LWIP"
+        ],
+        "macros_add": ["USE_USER_DEFINED_HAL_ETH_MSPINIT"],
+        "config": {
+            "hse_value": {
+                "value": "25000000",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL",
+            "network-default-interface-type": "ETHERNET"
+        }
+    },
+    "MCU_STM32F407xG": {
+        "inherits": [
+            "MCU_STM32F4"
+        ],
+        "public": false,
+        "extra_labels_add": [
+            "STM32F407xG"
+        ],
+        "macros_add": [
+            "STM32F407xx"
+        ],
+        "device_has_add": [
+            "ANALOGOUT",
+            "TRNG"
+        ]
+    },
+    "STM32F407ZG": {
+        "inherits": ["MCU_STM32F407xG"],
+        "device_name": "STM32F407ZGTx",
+        "device_has_add": [
+            "CAN",
+			"EMAC",
+            "ETHERNET"
+        ],
+        "features": [
+            "LWIP"
+        ],
+        "macros_add": ["USE_USER_DEFINED_HAL_ETH_MSPINIT"],
+        "config": {
+            "hse_value": {
+                "value": "8000000",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL",
+            "network-default-interface-type": "ETHERNET"
+        }
+    },
+    "STM32H750VB": {
+        "inherits": ["MCU_STM32H750xB"],
+        "device_name": "STM32H750VBTx",
+        "device_has_add": [
+            "USBDEVICE",
+            "QSPI"
+        ],
+        "config": {
+            "hse_value": {
+                "value": "25000000",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL"
+        }
+    },
+    "STM32H7B0VB": {
+        "inherits": ["MCU_STM32H7"],
+        "core": "Cortex-M7FD",
+        "mbed_rom_start": "0x08000000",
+        "mbed_rom_size": "0x200000",
+        "mbed_ram_start": "0x24000000",
+        "mbed_ram_size": "0x100000",
+        "bootloader_supported": false,
+        "extra_labels_add": [
+            "STM32H7B0xBQ"
+        ],
+        "macros_add": [
+            "STM32H7B0xxQ"
+        ],
+        "device_name": "STM32H7B0VBTx",
+        "device_has_add": [
+            "USBDEVICE",
+            "QSPI",
+            "OSPI"
+        ],
+        "components_add": [
+            "SPIF",
+            "QSPIF"
+        ],
+        "config": {
+            "hse_value": {
+                "value": "25000000",
+                "macro_name": "HSE_VALUE"
+            },
+            "usb_speed": {
+                "help": "USE_USB_OTG_HS or USE_USB_HS_IN_FS",
+                "value": "USE_USB_HS_IN_FS"
+            }
+        },
+        "overrides": {
+            "system_power_supply": "PWR_DIRECT_SMPS_SUPPLY",
+            "clock_source": "USE_PLL_HSE_XTAL"
+        }
+    }
+}
