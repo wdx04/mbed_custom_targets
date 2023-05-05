@@ -18,6 +18,7 @@
 #include "platform/mbed_debug.h"
 #include "platform/mbed_wait_api.h"
 #include "SDIOBlockDevice.h"
+#include "ThisThread.h"
 
 namespace mbed
 {
@@ -225,6 +226,10 @@ int SDIOBlockDevice::read(void *buffer, bd_addr_t addr, bd_size_t size)
                 unlock();
                 return SD_BLOCK_DEVICE_ERROR_READBLOCKS;
             }
+            else
+            {
+                rtos::ThisThread::yield();
+            }
         }
     }
     else
@@ -305,6 +310,10 @@ int SDIOBlockDevice::program(const void *buffer, bd_addr_t addr, bd_size_t size)
             {
                 unlock();
                 return SD_BLOCK_DEVICE_ERROR_WRITEBLOCKS;
+            }
+            else
+            {
+                rtos::ThisThread::yield();
             }
         }
     }
