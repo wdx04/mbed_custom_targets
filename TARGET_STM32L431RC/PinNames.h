@@ -139,7 +139,7 @@ typedef enum {
 
     /**** SPI Flash pins ****/
     SPI_CS = PB_12,
-    SPI_SCLK = PB_13,
+    SPI_SCK = PB_13,
     SPI_MISO = PB_14,
     SPI_MOSI  = PB_15,
 
