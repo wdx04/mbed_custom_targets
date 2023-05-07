@@ -19,11 +19,6 @@
 #ifndef __SDIO_DEVICE_H
 #define __SDIO_DEVICE_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #include "stm32l4xx_hal.h"
 
   /* Typedefs */
@@ -61,25 +56,24 @@ extern "C"
 /** 
   * @brief  SD transfer state definition  
   */
-#define SD_TRANSFER_OK                ((uint8_t)0x00)
-#define SD_TRANSFER_BUSY              ((uint8_t)0x01)
+#define SD_TRANSFER_BUSY              ((uint8_t)0x00)
+#define SD_TRANSFER_OK                ((uint8_t)0x01)
 #define SD_TRANSFER_ERROR             ((uint8_t)0x02)
+#define SD_TRANSFER_WRITE_OK          ((uint8_t)0x04)
+#define SD_TRANSFER_WRITE_ERROR       ((uint8_t)0x08)
 
-  /* Exported functions */
-  uint8_t SD_Init(void);
-  uint8_t SD_DeInit(void);
-  uint8_t SD_ReadBlocks(uint32_t *pData, uint32_t ReadAddr, uint32_t NumOfBlocks, uint32_t Timeout);
-  uint8_t SD_WriteBlocks(uint32_t *pData, uint32_t WriteAddr, uint32_t NumOfBlocks, uint32_t Timeout);
-  uint8_t SD_ReadBlocks_DMA(uint32_t *pData, uint32_t ReadAddr, uint32_t NumOfBlocks);
-  uint8_t SD_WriteBlocks_DMA(uint32_t *pData, uint32_t WriteAddr, uint32_t NumOfBlocks);
-  uint8_t SD_DMA_ReadPending(void);
-  uint8_t SD_DMA_WritePending(void);
-  uint8_t SD_Erase(uint32_t StartAddr, uint32_t EndAddr);
+/* Exported functions */
+uint8_t SD_Init(void);
+uint8_t SD_DeInit(void);
+uint8_t SD_ReadBlocks(uint32_t *pData, uint32_t ReadAddr, uint32_t NumOfBlocks, uint32_t Timeout);
+uint8_t SD_WriteBlocks(uint32_t *pData, uint32_t WriteAddr, uint32_t NumOfBlocks, uint32_t Timeout);
+uint8_t SD_ReadBlocks_DMA(uint32_t *pData, uint32_t ReadAddr, uint32_t NumOfBlocks);
+uint8_t SD_WriteBlocks_DMA(uint32_t *pData, uint32_t WriteAddr, uint32_t NumOfBlocks);
+uint8_t SD_DMA_WaitForReadCplt(int timeout_ms);
+uint8_t SD_DMA_WaitForWriteCplt(int timeout_ms);
+uint8_t SD_Erase(uint32_t StartAddr, uint32_t EndAddr);
 
-  uint8_t SD_GetCardState(void);
-  void SD_GetCardInfo(SD_Cardinfo_t *CardInfo);
-#ifdef __cplusplus
-}
-#endif
+uint8_t SD_GetCardState(void);
+void SD_GetCardInfo(SD_Cardinfo_t *CardInfo);
 
 #endif /* __SDIO_DEVICE_H */
