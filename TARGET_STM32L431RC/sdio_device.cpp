@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-
+#include "mbed.h"
 #include "sdio_device.h"
-#include "platform/mbed_error.h"
 
 /* Extern variables ---------------------------------------------------------*/
 
 SD_HandleTypeDef hsd;
-
-// simple flags for DMA pending signaling
-volatile uint8_t SD_DMA_ReadPendingState = SD_TRANSFER_OK;
-volatile uint8_t SD_DMA_WritePendingState = SD_TRANSFER_OK;
+EventFlags sd_transfer_state;
 
 static HAL_StatusTypeDef SD_DMAConfigRx(SD_HandleTypeDef *hsd);
 static HAL_StatusTypeDef SD_DMAConfigTx(SD_HandleTypeDef *hsd);
@@ -33,7 +29,7 @@ static HAL_StatusTypeDef SD_DMAConfigTx(SD_HandleTypeDef *hsd);
   * @brief  Handles SD card interrupt request.
   * @retval None
   */
-void SDMMC1_IRQHandler(void)
+extern "C" void SDMMC1_IRQHandler(void)
 {
    HAL_SD_IRQHandler(&hsd);
 }
@@ -42,7 +38,7 @@ void SDMMC1_IRQHandler(void)
   * @brief  Handles SD DMA transfer interrupt request.
   * @retval None
   */
-void DMA2_Channel5_IRQHandler(void)
+extern "C" void DMA2_Channel5_IRQHandler(void)
 {
   if((hsd.Context == (SD_CONTEXT_DMA | SD_CONTEXT_READ_SINGLE_BLOCK)) ||
      (hsd.Context == (SD_CONTEXT_DMA | SD_CONTEXT_READ_MULTIPLE_BLOCK)))
@@ -60,7 +56,7 @@ void DMA2_Channel5_IRQHandler(void)
  *
  * @param hsd:  Handle for SD handle Structure definition
  */
-void HAL_SD_MspInit(SD_HandleTypeDef *hsd)
+extern "C" void HAL_SD_MspInit(SD_HandleTypeDef *hsd)
 {
   GPIO_InitTypeDef gpioinitstruct = {0};
   RCC_PeriphCLKInitTypeDef  RCC_PeriphClkInit;
@@ -115,7 +111,7 @@ void HAL_SD_MspInit(SD_HandleTypeDef *hsd)
  *
  * @param hsd:  Handle for SD handle Structure definition
  */
-void HAL_SD_MspDeInit(SD_HandleTypeDef *hsd)
+extern "C" void HAL_SD_MspDeInit(SD_HandleTypeDef *hsd)
 {
   GPIO_InitTypeDef gpioinitstruct = {0};
 
@@ -153,16 +149,34 @@ void HAL_SD_MspDeInit(SD_HandleTypeDef *hsd)
  * @param  hsd: SD handle
  * @param  Params : pointer on additional configuration parameters, can be NULL.
  */
-void SD_MspDeInit(SD_HandleTypeDef *hsd, void *Params)
+extern "C" void SD_MspDeInit(SD_HandleTypeDef *hsd, void *Params)
 {
-
-#if 0
-    if (hsd->Instance == SDMMC2) {
-    }
-#endif
 }
 
+/**
+  * @brief Rx Transfer completed callbacks
+  * @param hsd Pointer SD handle
+  * @retval None
+  */
+extern "C" void HAL_SD_RxCpltCallback(SD_HandleTypeDef *hsd)
+{
+  sd_transfer_state.set(SD_TRANSFER_OK);
+}
 
+/**
+  * @brief Tx Transfer completed callbacks
+  * @param hsd Pointer to SD handle
+  * @retval None
+  */
+extern "C" void HAL_SD_TxCpltCallback(SD_HandleTypeDef *hsd)
+{
+  sd_transfer_state.set(SD_TRANSFER_WRITE_OK);
+}
+
+extern "C" void HAL_SD_ErrorCallback(SD_HandleTypeDef *hsd)
+{
+  sd_transfer_state.set(SD_TRANSFER_ERROR|SD_TRANSFER_WRITE_ERROR);
+}
 
 /**
  * @brief  Initializes the SD card device.
@@ -274,7 +288,7 @@ uint8_t SD_ReadBlocks_DMA(uint32_t *pData, uint32_t ReadAddr, uint32_t NumOfBloc
 {
   HAL_StatusTypeDef  sd_state = HAL_OK;
 
-  SD_DMA_ReadPendingState = SD_TRANSFER_BUSY;
+  sd_transfer_state.clear(SD_TRANSFER_OK|SD_TRANSFER_ERROR);
 
   /* Invalidate the dma tx handle*/
   hsd.hdmatx = NULL;
@@ -309,7 +323,7 @@ uint8_t SD_WriteBlocks_DMA(uint32_t *pData, uint32_t WriteAddr, uint32_t NumOfBl
 {
   HAL_StatusTypeDef  sd_state = HAL_OK;
 
-  SD_DMA_WritePendingState = SD_TRANSFER_BUSY;
+  sd_transfer_state.clear(SD_TRANSFER_WRITE_OK|SD_TRANSFER_WRITE_ERROR);
 
   /* Invalidate the dma rx handle*/
   hsd.hdmarx = NULL;
@@ -410,62 +424,27 @@ void SD_GetCardInfo(SD_Cardinfo_t *CardInfo)
 }
 
 /**
- * @brief  Check if a DMA operation is pending
- * @retval DMA operation is pending
+ * @brief  Wait for completion of DMA read operation
+ * @retval DMA operation result
  *          This value can be one of the following values:
- *            @arg  SD_TRANSFER_OK: No data transfer is acting
- *            @arg  SD_TRANSFER_BUSY: Data transfer is acting
+ *            @arg  SD_TRANSFER_OK: Data read success
+ *            @arg  SD_TRANSFER_ERROR: Data read error
  */
-uint8_t SD_DMA_ReadPending(void)
+uint8_t SD_DMA_WaitForReadCplt(int timeout_ms)
 {
-    return SD_DMA_ReadPendingState;
+    return sd_transfer_state.wait_any_for(SD_TRANSFER_OK|SD_TRANSFER_ERROR, chrono::milliseconds(timeout_ms));
 }
 
 /**
- * @brief  Check if a DMA operation is pending
- * @retval DMA operation is pending
+ * @brief  Wait for completion of DMA write operation
+ * @retval DMA operation result
  *          This value can be one of the following values:
- *            @arg  SD_TRANSFER_OK: No data transfer is acting
- *            @arg  SD_TRANSFER_BUSY: Data transfer is acting
+ *            @arg  SD_TRANSFER_OK: Data write success
+ *            @arg  SD_TRANSFER_BUSY: Data write error
  */
-uint8_t SD_DMA_WritePending(void)
+uint8_t SD_DMA_WaitForWriteCplt(int timeout_ms)
 {
-    return SD_DMA_WritePendingState;
-}
-
-/**
-  * @brief Rx Transfer completed callbacks
-  * @param hsd Pointer SD handle
-  * @retval None
-  */
-void HAL_SD_RxCpltCallback(SD_HandleTypeDef *hsd)
-{
-    SD_DMA_ReadPendingState = SD_TRANSFER_OK;
-}
-
-/**
-  * @brief Tx Transfer completed callbacks
-  * @param hsd Pointer to SD handle
-  * @retval None
-  */
-void HAL_SD_TxCpltCallback(SD_HandleTypeDef *hsd)
-{
-    SD_DMA_WritePendingState = SD_TRANSFER_OK;
-}
-
-/**
-  * @brief SD Abort callbacks
-  * @param hsd: SD handle
-  * @retval None
-  */
-void HAL_SD_AbortCallback(SD_HandleTypeDef *hsd)
-{
-      //BSP_SD_AbortCallback();
-}
-
-void HAL_SD_ErrorCallback(SD_HandleTypeDef *hsd)
-{
-    printf("SD Error\n");
+    return (sd_transfer_state.wait_any_for(SD_TRANSFER_WRITE_OK|SD_TRANSFER_WRITE_ERROR, chrono::milliseconds(timeout_ms)) >> 2);
 }
 
 /**

@@ -109,7 +109,7 @@ MBED_WEAK uint8_t SetSysClock_PLL_HSE(uint8_t bypass)
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
     RCC_OscInitStruct.PLL.PLLP = 2;   // PLLCLK = SYSCLK = 280 MHz
-    RCC_OscInitStruct.PLL.PLLQ = 56;  // PLL1Q used for FDCAN = 10 MHz
+    RCC_OscInitStruct.PLL.PLLQ = 5;  // PLL1Q = 112 MHz
     RCC_OscInitStruct.PLL.PLLR = 2;
     RCC_OscInitStruct.PLL.PLLFRACN = 0;
     RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
@@ -170,7 +170,7 @@ uint8_t SetSysClock_PLL_HSI(void)
     RCC_OscInitStruct.PLL.PLLM = 32;  // 2 MHz
     RCC_OscInitStruct.PLL.PLLN = 280; // 560 MHz
     RCC_OscInitStruct.PLL.PLLP = 2;   // PLLCLK = SYSCLK = 280 MHz
-    RCC_OscInitStruct.PLL.PLLQ = 56;  // PLL1Q used for FDCAN = 10 MHz
+    RCC_OscInitStruct.PLL.PLLQ = 5;  // PLL1Q = 112 MHz
     RCC_OscInitStruct.PLL.PLLR = 2;
     RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
     RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
