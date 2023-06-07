@@ -124,7 +124,7 @@ MBED_WEAK uint8_t SetSysClock_PLL_HSE(uint8_t bypass)
                                   RCC_CLOCKTYPE_D1PCLK1 | RCC_CLOCKTYPE_D3PCLK1;
     RCC_ClkInitStruct.SYSCLKSource   = RCC_SYSCLKSOURCE_PLLCLK;
     RCC_ClkInitStruct.SYSCLKDivider  = RCC_SYSCLK_DIV1;
-    RCC_ClkInitStruct.AHBCLKDivider  = RCC_HCLK_DIV2;
+    RCC_ClkInitStruct.AHBCLKDivider  = RCC_HCLK_DIV1;
     RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
     RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
     RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV2;

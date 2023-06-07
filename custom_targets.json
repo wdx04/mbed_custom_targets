@@ -12,6 +12,15 @@
             "clock_source": "USE_PLL_HSE_XTAL"
         }
     },
+    "NUCLEO_G070RB": {
+        "inherits": [
+            "MCU_STM32G070xB"
+        ],
+        "supported_form_factors": [
+            "ARDUINO_UNO"
+        ],
+        "device_name": "STM32G070RBTx"
+    },
     "MCU_STM32F401xC": {
         "inherits": [
             "MCU_STM32F4"
@@ -41,6 +50,16 @@
         "inherits": ["MCU_STM32F334x8"],
         "device_name": "STM32F334R8Tx",
         "mbed_ram_size": "0x3000"
+    },
+    "DISCO_F303VC": {
+        "inherits": ["MCU_STM32F303xC"],
+        "overrides": { "lse_available": 0 },
+        "mbed_rom_start": "0x08000000",
+        "mbed_rom_size": "0x40000",
+        "mbed_ram_start": "0x20000000",
+        "mbed_ram_size": "0xa000",
+        "bootloader_supported": false,
+        "device_name": "STM32F303VC"
     },
     "STM32L071RZ": {
         "inherits": ["MCU_STM32L071xZ"],
@@ -81,9 +100,6 @@
         ],
         "device_has_add": [
             "USBDEVICE"
-        ],
-        "macros_add": [
-            "HAS_DMA2D=1"
         ],
         "detect_code": [
             "0313"

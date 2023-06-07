@@ -19,7 +19,7 @@
 #ifndef __SDIO_DEVICE_H
 #define __SDIO_DEVICE_H
 
-#include "stm32h7xx_hal.h"
+#include "stm32f1xx_hal.h"
 
   /* Typedefs */
 
