@@ -111,9 +111,9 @@ int SDIOBlockDevice::init()
 
     SD_GetCardInfo(&_cardInfo);
     _is_initialized = true;
-    debug_if(SD_DBG, "SD initialized: type: %ld  version: %ld  class: %ld\n",
+    debug_if(SD_DBG, "SD initialized: type: %u  version: %u  class: %u\n",
              _cardInfo.CardType, _cardInfo.CardVersion, _cardInfo.Class);
-    debug_if(SD_DBG, "SD size: %ld MB\n",
+    debug_if(SD_DBG, "SD size: %u MB\n",
              _cardInfo.LogBlockNbr / 2 / 1024);
 
     // get sectors count from cardinfo
@@ -198,6 +198,11 @@ int SDIOBlockDevice::read(void *buffer, bd_addr_t addr, bd_size_t size)
         }
     }
 
+#if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    uint32_t alignedAddr = (uint32_t)buffer & ~0x1F;
+    SCB_CleanDCache_by_Addr((uint32_t*)alignedAddr, size + ((uint32_t)buffer - alignedAddr));
+#endif
+
     // receive the data : one block/ multiple blocks is handled in ReadBlocks()
     int status = SD_ReadBlocks_DMA(_buffer, addr, blockCnt);
     debug_if(SD_DBG, "ReadBlocksDMA dbgtest addr: %lld  blockCnt: %lld status: %d\n", addr, blockCnt, status);
@@ -205,7 +210,10 @@ int SDIOBlockDevice::read(void *buffer, bd_addr_t addr, bd_size_t size)
     if (status == MSD_OK)
     {
         // wait until DMA finished
-        if(SD_DMA_WaitForReadCplt(MBED_CONF_SD_TIMEOUT) != SD_TRANSFER_OK)
+        sleep_manager_lock_deep_sleep();
+        int transfer_result = SD_DMA_WaitForReadCplt(MBED_CONF_SD_TIMEOUT);
+        sleep_manager_unlock_deep_sleep();
+        if(transfer_result != SD_TRANSFER_OK)
         {
             unlock();
             return SD_BLOCK_DEVICE_ERROR_READBLOCKS;
@@ -232,6 +240,10 @@ int SDIOBlockDevice::read(void *buffer, bd_addr_t addr, bd_size_t size)
         unlock();
         return SD_BLOCK_DEVICE_ERROR_READBLOCKS;
     }
+
+#if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    SCB_InvalidateDCache_by_Addr((uint32_t*)alignedAddr, size + ((uint32_t) buffer - alignedAddr));
+#endif
 
     unlock();
     debug_if(SD_DBG, "ReadBlocks returned with status %d. addr: %lld  blockCnt: %lld \n", status, addr, blockCnt);
@@ -280,13 +292,21 @@ int SDIOBlockDevice::program(const void *buffer, bd_addr_t addr, bd_size_t size)
         }
     }
 
+#if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    uint32_t alignedAddr = (uint32_t)buffer &  ~0x1F;
+    SCB_CleanDCache_by_Addr((uint32_t*)alignedAddr, size + ((uint32_t)buffer - alignedAddr));
+#endif
+
     int status = SD_WriteBlocks_DMA(_buffer, addr, blockCnt);
     debug_if(SD_DBG, "WriteBlocks dbgtest addr: %lld  blockCnt: %lld \n", addr, blockCnt);
 
     if (status == MSD_OK)
     {
         // wait until DMA finished
-        if(SD_DMA_WaitForWriteCplt(MBED_CONF_SD_TIMEOUT) != SD_TRANSFER_OK)
+        sleep_manager_lock_deep_sleep();
+        int transfer_result = SD_DMA_WaitForWriteCplt(MBED_CONF_SD_TIMEOUT);
+        sleep_manager_unlock_deep_sleep();
+        if(transfer_result != SD_TRANSFER_OK)
         {
             unlock();
             return SD_BLOCK_DEVICE_ERROR_WRITEBLOCKS;
