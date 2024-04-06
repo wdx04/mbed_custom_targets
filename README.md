@@ -1,4 +1,4 @@
-# mbed_custom_targets
+﻿# mbed_custom_targets
 Custom STM32 targets for Mbed OS 6
 
 * TARGET_DEVKIT_STM32L496VG --- 阿里云IOT开发板(已停产)
@@ -17,3 +17,7 @@ Custom STM32 targets for Mbed OS 6
 * TARGET_STM32H750VB -- 反客STM32H750VB核心板
 * TARGET_STM32L071RZ -- 望曦电子STM32L071RZ核心板(已停产)
 * TARGET_STM32L431RC -- BORING-TECH STM32L431RC核心板
+* TARGET_STM32F107VC -- 浩普STM32F107VC开发板
+* TARGET_NUCLEO_U545RE_Q -- ST Nucleo U545RE-Q
+
+Note: For targets with TOOLCHAIN folders, only TOOLCHAIN_ARM is verified to work.

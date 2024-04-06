@@ -162,10 +162,10 @@ uint8_t SD_Init(void)
 
     hsd.Instance = SDMMC1;
     hsd.Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
-    // hsd.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_ENABLE;
-    hsd.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
+    hsd.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_ENABLE;
+    // hsd.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
     hsd.Init.BusWide = SDMMC_BUS_WIDE_4B;
-    hsd.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_ENABLE;
+    hsd.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
     hsd.Init.ClockDiv = 2;          // SDMMC kernel clock / (2 * 2) = 50 MHz
 
     /* HAL SD initialization */

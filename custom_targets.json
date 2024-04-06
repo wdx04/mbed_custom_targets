@@ -94,6 +94,37 @@
             "clock_source": "USE_PLL_HSE_XTAL"
         }
     },
+    "STM32F107VC": {
+        "inherits": [
+            "MCU_STM32F1"
+        ],
+        "device_name": "STM32F107VCTx",
+        "extra_labels_add": [
+            "STM32F107xC"
+        ],
+        "mbed_rom_start": "0x08000000",
+        "mbed_rom_size": "0x40000",
+        "mbed_ram_start": "0x20000000",
+        "mbed_ram_size": "0x10000",
+        "device_has_add": [
+			"EMAC",
+            "ETHERNET",
+            "USBDEVICE",
+            "CAN"
+        ],
+        "macros_add": [
+            "STM32F107xC"
+        ],
+        "config": {
+            "hse_value": {
+                "value": "25000000",
+                "macro_name": "HSE_VALUE"
+            }
+        },
+        "overrides": {
+            "clock_source": "USE_PLL_HSE_XTAL"
+        }
+    },
     "DEVKIT_STM32L496VG": {
         "inherits": [
             "MCU_STM32L496xG"
@@ -284,5 +315,30 @@
             "system_power_supply": "PWR_DIRECT_SMPS_SUPPLY",
             "clock_source": "USE_PLL_HSE_XTAL"
         }
+    },
+	"MCU_STM32U545xE": {
+        "inherits": [
+            "MCU_STM32U5"
+        ],
+        "public": false,
+        "mbed_rom_start": "0x08000000",
+        "mbed_rom_size": "0x80000",
+        "mbed_ram_start": "0x20000000",
+        "mbed_ram_size": "0x40000",
+        "extra_labels_add": [
+            "STM32U545xE"
+        ],
+        "macros_add": [
+            "STM32U545xx"
+        ]
+    },
+    "NUCLEO_U545RE_Q": {
+        "inherits": [
+            "MCU_STM32U545xE"
+        ],
+        "supported_form_factors": [
+            "ARDUINO_UNO"
+        ],
+        "device_name": "STM32U545RETx"
     }
 }
